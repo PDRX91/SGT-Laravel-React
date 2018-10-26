@@ -12,4 +12,17 @@ class StudentsController extends Controller
         $students = Student::where('teacher_ID', $request->ID)->get();
         return response()->json($students);
     }
+
+    public function store(Request $request) {
+        $student = new Student;
+        $student->name = $request->name;
+        $student->grade = $request->grade;
+        $student->course = $request->course;
+        $student->teacher_ID = $request->ID;
+        $student->save();
+
+        return response()->json([
+            'message' => 'Create success'
+        ], 201);
+    }
 }

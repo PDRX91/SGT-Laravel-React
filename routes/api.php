@@ -18,3 +18,4 @@ use Illuminate\Http\Request;
 // });
 
 Route::get('students', 'StudentsController@index');
+Route::post('/students', 'StudentsController@store');

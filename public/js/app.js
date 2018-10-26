@@ -62194,7 +62194,8 @@ var List = function (_Component) {
         var _this = _possibleConstructorReturn(this, (List.__proto__ || Object.getPrototypeOf(List)).call(this, props));
 
         _this.state = {
-            'items': []
+            'items': [],
+            'id': 1
         };
         return _this;
     }
@@ -62211,7 +62212,7 @@ var List = function (_Component) {
 
             __WEBPACK_IMPORTED_MODULE_1_axios___default.a.get('/api/students', {
                 params: {
-                    ID: 1
+                    ID: this.state.id
                 }
             }).then(function (response) {
                 _this2.setState({ 'items': response.data });
@@ -62250,6 +62251,11 @@ var List = function (_Component) {
                     __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                         'td',
                         null,
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                            'button',
+                            { className: 'edit-btn btn btn-info mr-2', id: id },
+                            'EDIT'
+                        ),
                         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                             'button',
                             { className: 'delete-btn btn btn-danger', id: id },
@@ -62306,7 +62312,7 @@ var List = function (_Component) {
                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                     'div',
                     { className: 'add-student-box col-md-4' },
-                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__studentForm__["a" /* default */], null)
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__studentForm__["a" /* default */], { userID: this.state.id })
                 )
             );
         }
@@ -62338,6 +62344,8 @@ var List = function (_Component) {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_axios___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_axios__);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -62350,13 +62358,49 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var NewStudentForm = function (_Component) {
     _inherits(NewStudentForm, _Component);
 
-    function NewStudentForm() {
+    function NewStudentForm(props) {
         _classCallCheck(this, NewStudentForm);
 
-        return _possibleConstructorReturn(this, (NewStudentForm.__proto__ || Object.getPrototypeOf(NewStudentForm)).apply(this, arguments));
+        var _this = _possibleConstructorReturn(this, (NewStudentForm.__proto__ || Object.getPrototypeOf(NewStudentForm)).call(this, props));
+
+        _this.state = {
+            name: 'Student Name',
+            course: 'Student Course',
+            grade: 'Student Grade'
+        };
+
+        _this.handleChange = _this.handleChange.bind(_this);
+        _this.addStudent = _this.addStudent.bind(_this);
+        return _this;
     }
 
     _createClass(NewStudentForm, [{
+        key: 'handleChange',
+        value: function handleChange(e) {
+            var value = e.target.value;
+            var name = e.target.name;
+            this.setState(_defineProperty({}, name, value));
+        }
+    }, {
+        key: 'addStudent',
+        value: function addStudent() {
+            var _state = this.state,
+                name = _state.name,
+                course = _state.course,
+                grade = _state.grade;
+
+            __WEBPACK_IMPORTED_MODULE_1_axios___default.a.post('/api/students', {
+                ID: this.props.userID,
+                name: name,
+                course: course,
+                grade: grade
+            }).then(function (response) {
+                console.log(response);
+            }).then(function (error) {
+                console.log(error);
+            });
+        }
+    }, {
         key: 'render',
         value: function render() {
             return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
@@ -62376,10 +62420,10 @@ var NewStudentForm = function (_Component) {
                         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                             'span',
                             { className: 'input-group-text' },
-                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('i', { 'class': 'fas fa-user' })
+                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('i', { className: 'fas fa-user' })
                         )
                     ),
-                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('input', { type: 'text', className: 'form-control', name: 'name', id: 'name', placeholder: 'Student Name' })
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('input', { type: 'text', className: 'form-control', name: 'name', id: 'name', onChange: this.handleChange, placeholder: this.state.name })
                 ),
                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                     'div',
@@ -62390,10 +62434,10 @@ var NewStudentForm = function (_Component) {
                         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                             'span',
                             { className: 'input-group-text' },
-                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('i', { 'class': 'fas fa-book-open' })
+                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('i', { className: 'fas fa-book-open' })
                         )
                     ),
-                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('input', { type: 'text', className: 'form-control', name: 'course', id: 'course', placeholder: 'Student Course' })
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('input', { type: 'text', className: 'form-control', name: 'course', id: 'course', onChange: this.handleChange, placeholder: this.state.course })
                 ),
                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                     'div',
@@ -62404,17 +62448,17 @@ var NewStudentForm = function (_Component) {
                         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                             'span',
                             { className: 'input-group-text' },
-                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('i', { 'class': 'fas fa-graduation-cap' })
+                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('i', { className: 'fas fa-graduation-cap' })
                         )
                     ),
-                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('input', { type: 'text', className: 'form-control', name: 'grade', id: 'grade', placeholder: 'Student grade' })
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('input', { type: 'text', className: 'form-control', name: 'grade', id: 'grade', onChange: this.handleChange, placeholder: this.state.grade })
                 ),
                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                     'div',
                     { className: 'button-row row' },
                     __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                         'button',
-                        { className: 'add-btn btn btn-success col ml-3' },
+                        { className: 'add-btn btn btn-success col ml-3', onClick: this.addStudent },
                         'ADD'
                     ),
                     __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(

@@ -7,7 +7,8 @@ export default class List extends Component {
     constructor(props){
         super(props);
         this.state = {
-            'items' : []
+            'items' : [],
+            'id': 1
         }
     }
 
@@ -18,7 +19,7 @@ export default class List extends Component {
     getStudents() {
         axios.get('/api/students', {
             params: {
-                ID: 1
+                ID: this.state.id
             }
         })
         .then((response) => {
@@ -39,6 +40,7 @@ export default class List extends Component {
                     <td>{course}</td>
                     <td>{grade}</td>
                     <td>
+                        <button className="edit-btn btn btn-info mr-2" id={id}>EDIT</button>
                         <button className="delete-btn btn btn-danger" id={id}>DELETE</button>
                     </td>
                 </tr>
@@ -63,7 +65,7 @@ export default class List extends Component {
                     </table>
                 </div>
                 <div className="add-student-box col-md-4">
-                    <StudentForm />
+                    <StudentForm userID={this.state.id}/>
                 </div>
             </div>
         )
