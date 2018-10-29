@@ -26,8 +26,17 @@ class StudentsController extends Controller
         ], 201);
     }
 
-    public function delete(Student $student){
+    public function delete(Student $student) {
         $student->delete();
         return response()->json(null, 204);
+    }
+
+    public function update(Request $request, Student $student) {
+        $student->update([
+            'name' => $request->name,
+            'grade' => $request->grade,
+            'course' => $request->course
+        ]);
+        return response()->json($student, 200);
     }
 }

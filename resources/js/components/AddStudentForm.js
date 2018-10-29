@@ -33,6 +33,7 @@ export default class NewStudentForm extends Component{
             grade: grade
         }).then((response)=>{
             // this.createTableItem()
+            this.props.renderstudent();
             this.setState({
                 name: '',
                 course: '',
@@ -84,7 +85,7 @@ export default class NewStudentForm extends Component{
                     <input type="text" className="form-control" name="grade" id="grade" onChange={this.handleChange} value={this.state.grade} placeholder='Student Grade'/>
                 </div>
                 <div className="button-row row">
-                    <button className="add-btn btn btn-success col ml-3" onClick={this.addStudent}>ADD</button>
+                    <button className="add-btn btn btn-success col ml-3" onClick={this.addStudent} renderstudent={this.renderStudent}>ADD</button>
                     <button className="cancel-btn btn btn-danger col mr-3" onClick={this.emptyForm}>CANCEL</button>
                 </div>
 

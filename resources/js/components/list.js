@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import StudentForm from './studentForm'
+import AddStudentForm from './addstudentForm'
+import EditStudentForm from './editStudentForm'
 
 
 export default class List extends Component {
@@ -12,6 +13,7 @@ export default class List extends Component {
         }
 
         this.handleDelete = this.handleDelete.bind(this);
+        this.renderStudent = this.renderStudent.bind(this);
     }
 
     componentDidMount(){
@@ -26,11 +28,31 @@ export default class List extends Component {
         })
         .then((response) => {
             this.setState({'items': response.data});
-            // console.log(this.state)
+            console.log(this.state)
+            // return this.genRows();
         })
         .catch((error)=> {
             console.log(error);
         })
+    }
+
+    genRows() {
+        const students = this.state.items.map((item, index) => {
+            const {name, course, grade, id} = item;
+            console.log(this.props);
+            return(
+                <tr key={index}>
+                    <td>{name}</td>
+                    <td>{course}</td>
+                    <td>{grade}</td>
+                    <td>
+                        <button className="edit-btn btn btn-info mr-2" id={id} onClick={this.handleEdit}>EDIT</button>
+                        <button className="delete-btn btn btn-danger" id={id} onClick={this.handleDelete} index={index}>DELETE</button>
+                    </td>
+                </tr>
+            )
+        })
+        return students;
     }
 
     handleDelete(e){
@@ -43,27 +65,26 @@ export default class List extends Component {
                 // console.log('Table Row: ', tableRow);
 
                 // tableRow.remove();
+                this.getStudents();
             })
             .then((error)=> {
                 console.log(error)
             })
     }
 
+    handleEdit(e){
+        const studentID = e.target.id;
+        return (
+            <EditStudentForm studentID={studentID}/>
+        )
+    }
+
+    renderStudent(){
+        this.getStudents();
+    }
+
     render() {
-        const students = this.state.items.map((item, index) => {
-            const {name, course, grade, id} = item;
-            return(
-                <tr key={index}>
-                    <td>{name}</td>
-                    <td>{course}</td>
-                    <td>{grade}</td>
-                    <td>
-                        <button className="edit-btn btn btn-info mr-2" id={id}>EDIT</button>
-                        <button className="delete-btn btn btn-danger" id={id} onClick={this.handleDelete} index={index}>DELETE</button>
-                    </td>
-                </tr>
-            )
-        })
+        const students = this.genRows();
 
         return (
             <div className="main-content-box container-fluid row">
@@ -83,7 +104,7 @@ export default class List extends Component {
                     </table>
                 </div>
                 <div className="add-student-box col-md-4">
-                    <StudentForm userID={this.state.id}/>
+                    <AddStudentForm userID={this.state.id} renderstudent={this.renderStudent}/>
                 </div>
             </div>
         )
