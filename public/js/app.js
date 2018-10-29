@@ -62152,7 +62152,7 @@ var Header = function (_Component) {
                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                     "h3",
                     { className: "average" },
-                    "Grade Average: 83"
+                    "Grade Average: N/A"
                 )
             );
         }
