@@ -11,9 +11,14 @@ export default class EditStudentForm extends Component{
         }
 
         this.handleChange = this.handleChange.bind(this);
-        this.addStudent = this.addStudent.bind(this);
-        this.emptyForm = this.emptyForm.bind(this);
-        // this.createTableItem = this.createTableItem.bind(this);
+    }
+
+    componentWillReceiveProps(nextProps) {
+        this.setState({
+            name: nextProps.name,
+            course: nextProps.course,
+            grade: nextProps.grade,
+        });
     }
 
     handleChange(e) {
@@ -21,76 +26,47 @@ export default class EditStudentForm extends Component{
         const name = e.target.name;
         this.setState({
             [name]: value
-        })
+        }, console.log(this.state)
+        )
     }
 
-    addStudent(){
-        const {name, course, grade} = this.state;
-        axios.post('/api/students', {
-            ID: this.props.userID,
-            name: name,
-            course: course,
-            grade: grade
-        }).then((response)=>{
-            // this.createTableItem()
-            this.setState({
-                name: '',
-                course: '',
-                grade: ''
-            });
-        }).then((error)=>{
-            console.log(error)
-        })
+    handleSave() {
+        console.log("edit form state:", this.state)
+        const item = this.state;
+        // this.props.saveedit(item)
     }
 
-    // createTableItem(){
-
-    // }
-
-    emptyForm(){
-        this.setState({
-            name: '',
-            course: '',
-            grade: ''
-        });
-    }
-
-    render(){
-        return(
-            <form action="#" id="edit-student-form">
-                <div className="form-container">
-                    <h3>Edit Student</h3>
-                    <div className="form-group input-group">
-                        <span className="input-group-prepend">
-                            <span className="input-group-text">
-
-                                <i className="fas fa-user"></i>
-                            </span>
-                        </span>
-                        <input type="text" className="form-control" name="name" id="name" onChange={this.handleChange} value={this.state.name} placeholder='Student Name'/>
-                    </div>
-                    <div className="form-group input-group">
-                        <span className="input-group-prepend">
-                            <span className="input-group-text">
-                                <i className="fas fa-book-open"></i>
-                            </span>
-                        </span>
-                        <input type="text" className="form-control" name="course" id="course" onChange={this.handleChange} value={this.state.course} placeholder='Student Course'/>
-                    </div>
-                    <div className="form-group input-group">
-                        <span className="input-group-prepend">
-                            <span className="input-group-text">
-                                <i className="fas fa-graduation-cap"></i>
-                            </span>
-                        </span>
-                        <input type="text" className="form-control" name="grade" id="grade" onChange={this.handleChange} value={this.state.grade} placeholder='Student Grade'/>
-                    </div>
-                    <div className="button-row row">
-                        <button className="add-btn btn btn-success col ml-3" onClick={this.addStudent}>ADD</button>
-                        <button className="cancel-btn btn btn-danger col mr-3" onClick={this.emptyForm}>CANCEL</button>
+    render() {
+        console.log('edit props', this.props);
+        const inputStyle = {
+            display: 'block',
+            width: '100%',
+        }
+        return (
+            <div className="modal fade" id="editModal" tabIndex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+                <div className="modal-dialog" role="document">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h5 className="modal-title" id="exampleModalLabel">Edit Student Info</h5>
+                            <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div className="modal-body">
+                            <label>Name</label><br/>
+                            <input value={this.state.name} name="name" onChange={this.handleChange} style={inputStyle}/><br/>
+                            <label>Course</label><br/>
+                            <input value={this.state.course} name="course" onChange={this.handleChange} style={inputStyle}/><br/>
+                            <label>Grade</label><br/>
+                            <input value={this.state.grade} name="grade" onChange={this.handleChange} style={inputStyle}/>
+                        </div>
+                        <div className="modal-footer">
+                            <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" className="btn btn-primary" data-dismiss="modal" onClick={() => { this.handleSave() }}>Save changes</button>
+                        </div>
                     </div>
                 </div>
-            </form>
-        )
+            </div>
+        );
     }
 }

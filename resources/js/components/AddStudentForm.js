@@ -13,7 +13,6 @@ export default class NewStudentForm extends Component{
         this.handleChange = this.handleChange.bind(this);
         this.addStudent = this.addStudent.bind(this);
         this.emptyForm = this.emptyForm.bind(this);
-        // this.createTableItem = this.createTableItem.bind(this);
     }
 
     handleChange(e) {
@@ -32,7 +31,6 @@ export default class NewStudentForm extends Component{
             course: course,
             grade: grade
         }).then((response)=>{
-            // this.createTableItem()
             this.props.renderstudent();
             this.setState({
                 name: '',
@@ -43,10 +41,6 @@ export default class NewStudentForm extends Component{
             console.log(error)
         })
     }
-
-    // createTableItem(){
-
-    // }
 
     emptyForm(){
         this.setState({

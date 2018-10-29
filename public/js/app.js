@@ -62197,11 +62197,14 @@ var List = function (_Component) {
 
         _this.state = {
             'items': [],
-            'id': 1
+            'id': 1,
+            'itemToEdit': 0
         };
 
         _this.handleDelete = _this.handleDelete.bind(_this);
         _this.renderStudent = _this.renderStudent.bind(_this);
+        _this.handleEdit = _this.handleEdit.bind(_this);
+        _this.saveEdit = _this.saveEdit.bind(_this);
         return _this;
     }
 
@@ -62238,7 +62241,6 @@ var List = function (_Component) {
                     grade = item.grade,
                     id = item.id;
 
-                console.log(_this3.props);
                 return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                     'tr',
                     { key: index },
@@ -62262,11 +62264,6 @@ var List = function (_Component) {
                         null,
                         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                             'button',
-                            { className: 'edit-btn btn btn-info mr-2', id: id, onClick: _this3.handleEdit },
-                            'EDIT'
-                        ),
-                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                            'button',
                             { className: 'delete-btn btn btn-danger', id: id, onClick: _this3.handleDelete, index: index },
                             'DELETE'
                         )
@@ -62284,10 +62281,6 @@ var List = function (_Component) {
             console.log(this.props.index);
             var tableRow = document.querySelectorAll('[key="' + e.target.index + '"');
             __WEBPACK_IMPORTED_MODULE_1_axios___default.a.delete('/api/students/' + studentID).then(function (response) {
-                // console.log(response)
-                // console.log('Table Row: ', tableRow);
-
-                // tableRow.remove();
                 _this4.getStudents();
             }).then(function (error) {
                 console.log(error);
@@ -62295,9 +62288,22 @@ var List = function (_Component) {
         }
     }, {
         key: 'handleEdit',
-        value: function handleEdit(e) {
-            var studentID = e.target.id;
-            return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_3__editStudentForm__["a" /* default */], { studentID: studentID });
+        value: function handleEdit(index) {
+            this.setState({
+                itemToEdit: index
+            });
+            console.log("edit: ", this.state.itemToEdit);
+        }
+    }, {
+        key: 'saveEdit',
+        value: function saveEdit(item) {
+            var itemToEdit = this.state.itemToEdit;
+            var tempItem = this.state.items;
+            tempitem[itemToEdit] = item;
+            this.setState({
+                items: tempItem
+            });
+            this.getStudents();
         }
     }, {
         key: 'renderStudent',
@@ -62308,6 +62314,18 @@ var List = function (_Component) {
         key: 'render',
         value: function render() {
             var students = this.genRows();
+            var itemToEdit = this.state.itemToEdit;
+            var editModal = void 0;
+
+            if (itemToEdit) {
+                var modalData = this.state.items[itemToEdit];
+                if (modalData) {
+                    console.log("modal data:", modalData);
+                    editModal = __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_3__editStudentForm__["a" /* default */], { name: modalData.name, course: modalData.course, grade: modaData.grade, saveedit: this.saveEdit });
+                }
+            } else {
+                editModal = __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_3__editStudentForm__["a" /* default */], { name: '', course: '', grade: '', saveedit: this.saveEdit });
+            }
 
             return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                 'div',
@@ -62351,7 +62369,8 @@ var List = function (_Component) {
                             null,
                             students
                         )
-                    )
+                    ),
+                    editModal
                 ),
                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                     'div',
@@ -62417,7 +62436,6 @@ var NewStudentForm = function (_Component) {
         _this.handleChange = _this.handleChange.bind(_this);
         _this.addStudent = _this.addStudent.bind(_this);
         _this.emptyForm = _this.emptyForm.bind(_this);
-        // this.createTableItem = this.createTableItem.bind(this);
         return _this;
     }
 
@@ -62444,7 +62462,6 @@ var NewStudentForm = function (_Component) {
                 course: course,
                 grade: grade
             }).then(function (response) {
-                // this.createTableItem()
                 _this2.props.renderstudent();
                 _this2.setState({
                     name: '',
@@ -62455,11 +62472,6 @@ var NewStudentForm = function (_Component) {
                 console.log(error);
             });
         }
-
-        // createTableItem(){
-
-        // }
-
     }, {
         key: 'emptyForm',
         value: function emptyForm() {
@@ -62582,127 +62594,111 @@ var EditStudentForm = function (_Component) {
         };
 
         _this.handleChange = _this.handleChange.bind(_this);
-        _this.addStudent = _this.addStudent.bind(_this);
-        _this.emptyForm = _this.emptyForm.bind(_this);
-        // this.createTableItem = this.createTableItem.bind(this);
         return _this;
     }
 
     _createClass(EditStudentForm, [{
+        key: 'componentWillReceiveProps',
+        value: function componentWillReceiveProps(nextProps) {
+            this.setState({
+                name: nextProps.name,
+                course: nextProps.course,
+                grade: nextProps.grade
+            });
+        }
+    }, {
         key: 'handleChange',
         value: function handleChange(e) {
             var value = e.target.value;
             var name = e.target.name;
-            this.setState(_defineProperty({}, name, value));
+            this.setState(_defineProperty({}, name, value), console.log(this.state));
         }
     }, {
-        key: 'addStudent',
-        value: function addStudent() {
-            var _this2 = this;
-
-            var _state = this.state,
-                name = _state.name,
-                course = _state.course,
-                grade = _state.grade;
-
-            __WEBPACK_IMPORTED_MODULE_1_axios___default.a.post('/api/students', {
-                ID: this.props.userID,
-                name: name,
-                course: course,
-                grade: grade
-            }).then(function (response) {
-                // this.createTableItem()
-                _this2.setState({
-                    name: '',
-                    course: '',
-                    grade: ''
-                });
-            }).then(function (error) {
-                console.log(error);
-            });
-        }
-
-        // createTableItem(){
-
-        // }
-
-    }, {
-        key: 'emptyForm',
-        value: function emptyForm() {
-            this.setState({
-                name: '',
-                course: '',
-                grade: ''
-            });
+        key: 'handleSave',
+        value: function handleSave() {
+            console.log("edit form state:", this.state);
+            var item = this.state;
+            // this.props.saveedit(item)
         }
     }, {
         key: 'render',
         value: function render() {
+            var _this2 = this;
+
+            console.log('edit props', this.props);
+            var inputStyle = {
+                display: 'block',
+                width: '100%'
+            };
             return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                'form',
-                { action: '#', id: 'edit-student-form' },
+                'div',
+                { className: 'modal fade', id: 'editModal', tabIndex: '-1', role: 'dialog', 'aria-labelledby': 'editModalLabel', 'aria-hidden': 'true' },
                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                     'div',
-                    { className: 'form-container' },
-                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                        'h3',
-                        null,
-                        'Edit Student'
-                    ),
+                    { className: 'modal-dialog', role: 'document' },
                     __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                         'div',
-                        { className: 'form-group input-group' },
+                        { className: 'modal-content' },
                         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                            'span',
-                            { className: 'input-group-prepend' },
+                            'div',
+                            { className: 'modal-header' },
                             __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                                'span',
-                                { className: 'input-group-text' },
-                                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('i', { className: 'fas fa-user' })
+                                'h5',
+                                { className: 'modal-title', id: 'exampleModalLabel' },
+                                'Edit Student Info'
+                            ),
+                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                'button',
+                                { type: 'button', className: 'close', 'data-dismiss': 'modal', 'aria-label': 'Close' },
+                                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                    'span',
+                                    { 'aria-hidden': 'true' },
+                                    '\xD7'
+                                )
                             )
                         ),
-                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('input', { type: 'text', className: 'form-control', name: 'name', id: 'name', onChange: this.handleChange, value: this.state.name, placeholder: 'Student Name' })
-                    ),
-                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                        'div',
-                        { className: 'form-group input-group' },
                         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                            'span',
-                            { className: 'input-group-prepend' },
+                            'div',
+                            { className: 'modal-body' },
                             __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                                'span',
-                                { className: 'input-group-text' },
-                                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('i', { className: 'fas fa-book-open' })
-                            )
-                        ),
-                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('input', { type: 'text', className: 'form-control', name: 'course', id: 'course', onChange: this.handleChange, value: this.state.course, placeholder: 'Student Course' })
-                    ),
-                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                        'div',
-                        { className: 'form-group input-group' },
-                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                            'span',
-                            { className: 'input-group-prepend' },
+                                'label',
+                                null,
+                                'Name'
+                            ),
+                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('br', null),
+                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('input', { value: this.state.name, name: 'name', onChange: this.handleChange, style: inputStyle }),
+                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('br', null),
                             __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                                'span',
-                                { className: 'input-group-text' },
-                                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('i', { className: 'fas fa-graduation-cap' })
+                                'label',
+                                null,
+                                'Course'
+                            ),
+                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('br', null),
+                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('input', { value: this.state.course, name: 'course', onChange: this.handleChange, style: inputStyle }),
+                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('br', null),
+                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                'label',
+                                null,
+                                'Grade'
+                            ),
+                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('br', null),
+                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('input', { value: this.state.grade, name: 'grade', onChange: this.handleChange, style: inputStyle })
+                        ),
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                            'div',
+                            { className: 'modal-footer' },
+                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                'button',
+                                { type: 'button', className: 'btn btn-secondary', 'data-dismiss': 'modal' },
+                                'Close'
+                            ),
+                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                'button',
+                                { type: 'button', className: 'btn btn-primary', 'data-dismiss': 'modal', onClick: function onClick() {
+                                        _this2.handleSave();
+                                    } },
+                                'Save changes'
                             )
-                        ),
-                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('input', { type: 'text', className: 'form-control', name: 'grade', id: 'grade', onChange: this.handleChange, value: this.state.grade, placeholder: 'Student Grade' })
-                    ),
-                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                        'div',
-                        { className: 'button-row row' },
-                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                            'button',
-                            { className: 'add-btn btn btn-success col ml-3', onClick: this.addStudent },
-                            'ADD'
-                        ),
-                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                            'button',
-                            { className: 'cancel-btn btn btn-danger col mr-3', onClick: this.emptyForm },
-                            'CANCEL'
                         )
                     )
                 )
