@@ -25,4 +25,9 @@ class StudentsController extends Controller
             'message' => 'Create success'
         ], 201);
     }
+
+    public function delete(Student $student){
+        $student->delete();
+        return response()->json(null, 204);
+    }
 }

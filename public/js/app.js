@@ -62197,6 +62197,8 @@ var List = function (_Component) {
             'items': [],
             'id': 1
         };
+
+        _this.handleDelete = _this.handleDelete.bind(_this);
         return _this;
     }
 
@@ -62216,14 +62218,31 @@ var List = function (_Component) {
                 }
             }).then(function (response) {
                 _this2.setState({ 'items': response.data });
-                console.log(_this2.state);
+                // console.log(this.state)
             }).catch(function (error) {
+                console.log(error);
+            });
+        }
+    }, {
+        key: 'handleDelete',
+        value: function handleDelete(e) {
+            var studentID = e.target.id;
+            console.log(this.props.index);
+            var tableRow = document.querySelectorAll('[key="' + e.target.index + '"');
+            __WEBPACK_IMPORTED_MODULE_1_axios___default.a.delete('/api/students/' + studentID).then(function (response) {
+                // console.log(response)
+                // console.log('Table Row: ', tableRow);
+
+                // tableRow.remove();
+            }).then(function (error) {
                 console.log(error);
             });
         }
     }, {
         key: 'render',
         value: function render() {
+            var _this3 = this;
+
             var students = this.state.items.map(function (item, index) {
                 var name = item.name,
                     course = item.course,
@@ -62258,7 +62277,7 @@ var List = function (_Component) {
                         ),
                         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                             'button',
-                            { className: 'delete-btn btn btn-danger', id: id },
+                            { className: 'delete-btn btn btn-danger', id: id, onClick: _this3.handleDelete, index: index },
                             'DELETE'
                         )
                     )
@@ -62364,13 +62383,15 @@ var NewStudentForm = function (_Component) {
         var _this = _possibleConstructorReturn(this, (NewStudentForm.__proto__ || Object.getPrototypeOf(NewStudentForm)).call(this, props));
 
         _this.state = {
-            name: 'Student Name',
-            course: 'Student Course',
-            grade: 'Student Grade'
+            name: '',
+            course: '',
+            grade: ''
         };
 
         _this.handleChange = _this.handleChange.bind(_this);
         _this.addStudent = _this.addStudent.bind(_this);
+        _this.emptyForm = _this.emptyForm.bind(_this);
+        // this.createTableItem = this.createTableItem.bind(this);
         return _this;
     }
 
@@ -62384,6 +62405,8 @@ var NewStudentForm = function (_Component) {
     }, {
         key: 'addStudent',
         value: function addStudent() {
+            var _this2 = this;
+
             var _state = this.state,
                 name = _state.name,
                 course = _state.course,
@@ -62395,9 +62418,28 @@ var NewStudentForm = function (_Component) {
                 course: course,
                 grade: grade
             }).then(function (response) {
-                console.log(response);
+                // this.createTableItem()
+                _this2.setState({
+                    name: '',
+                    course: '',
+                    grade: ''
+                });
             }).then(function (error) {
                 console.log(error);
+            });
+        }
+
+        // createTableItem(){
+
+        // }
+
+    }, {
+        key: 'emptyForm',
+        value: function emptyForm() {
+            this.setState({
+                name: '',
+                course: '',
+                grade: ''
             });
         }
     }, {
@@ -62423,7 +62465,7 @@ var NewStudentForm = function (_Component) {
                             __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('i', { className: 'fas fa-user' })
                         )
                     ),
-                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('input', { type: 'text', className: 'form-control', name: 'name', id: 'name', onChange: this.handleChange, placeholder: this.state.name })
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('input', { type: 'text', className: 'form-control', name: 'name', id: 'name', onChange: this.handleChange, value: this.state.name, placeholder: 'Student Name' })
                 ),
                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                     'div',
@@ -62437,7 +62479,7 @@ var NewStudentForm = function (_Component) {
                             __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('i', { className: 'fas fa-book-open' })
                         )
                     ),
-                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('input', { type: 'text', className: 'form-control', name: 'course', id: 'course', onChange: this.handleChange, placeholder: this.state.course })
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('input', { type: 'text', className: 'form-control', name: 'course', id: 'course', onChange: this.handleChange, value: this.state.course, placeholder: 'Student Course' })
                 ),
                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                     'div',
@@ -62451,7 +62493,7 @@ var NewStudentForm = function (_Component) {
                             __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('i', { className: 'fas fa-graduation-cap' })
                         )
                     ),
-                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('input', { type: 'text', className: 'form-control', name: 'grade', id: 'grade', onChange: this.handleChange, placeholder: this.state.grade })
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('input', { type: 'text', className: 'form-control', name: 'grade', id: 'grade', onChange: this.handleChange, value: this.state.grade, placeholder: 'Student Grade' })
                 ),
                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                     'div',
@@ -62463,7 +62505,7 @@ var NewStudentForm = function (_Component) {
                     ),
                     __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                         'button',
-                        { className: 'cancel-btn btn btn-danger col mr-3' },
+                        { className: 'cancel-btn btn btn-danger col mr-3', onClick: this.emptyForm },
                         'CANCEL'
                     )
                 )

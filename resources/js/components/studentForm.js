@@ -5,13 +5,15 @@ export default class NewStudentForm extends Component{
     constructor(props) {
         super(props);
         this.state = {
-            name: 'Student Name',
-            course: 'Student Course',
-            grade: 'Student Grade'
+            name: '',
+            course: '',
+            grade: ''
         }
 
         this.handleChange = this.handleChange.bind(this);
         this.addStudent = this.addStudent.bind(this);
+        this.emptyForm = this.emptyForm.bind(this);
+        // this.createTableItem = this.createTableItem.bind(this);
     }
 
     handleChange(e) {
@@ -30,10 +32,27 @@ export default class NewStudentForm extends Component{
             course: course,
             grade: grade
         }).then((response)=>{
-            console.log(response)
+            // this.createTableItem()
+            this.setState({
+                name: '',
+                course: '',
+                grade: ''
+            });
         }).then((error)=>{
             console.log(error)
         })
+    }
+
+    // createTableItem(){
+
+    // }
+
+    emptyForm(){
+        this.setState({
+            name: '',
+            course: '',
+            grade: ''
+        });
     }
 
     render(){
@@ -46,7 +65,7 @@ export default class NewStudentForm extends Component{
                             <i className="fas fa-user"></i>
                         </span>
                     </span>
-                    <input type="text" className="form-control" name="name" id="name" onChange={this.handleChange} placeholder={this.state.name}/>
+                    <input type="text" className="form-control" name="name" id="name" onChange={this.handleChange} value={this.state.name} placeholder='Student Name'/>
                 </div>
                 <div className="form-group input-group">
                     <span className="input-group-prepend">
@@ -54,7 +73,7 @@ export default class NewStudentForm extends Component{
                             <i className="fas fa-book-open"></i>
                         </span>
                     </span>
-                    <input type="text" className="form-control" name="course" id="course" onChange={this.handleChange} placeholder={this.state.course}/>
+                    <input type="text" className="form-control" name="course" id="course" onChange={this.handleChange} value={this.state.course} placeholder='Student Course'/>
                 </div>
                 <div className="form-group input-group">
                     <span className="input-group-prepend">
@@ -62,11 +81,11 @@ export default class NewStudentForm extends Component{
                             <i className="fas fa-graduation-cap"></i>
                         </span>
                     </span>
-                    <input type="text" className="form-control" name="grade" id="grade" onChange={this.handleChange} placeholder={this.state.grade}/>
+                    <input type="text" className="form-control" name="grade" id="grade" onChange={this.handleChange} value={this.state.grade} placeholder='Student Grade'/>
                 </div>
                 <div className="button-row row">
                     <button className="add-btn btn btn-success col ml-3" onClick={this.addStudent}>ADD</button>
-                    <button className="cancel-btn btn btn-danger col mr-3">CANCEL</button>
+                    <button className="cancel-btn btn btn-danger col mr-3" onClick={this.emptyForm}>CANCEL</button>
                 </div>
 
             </div>

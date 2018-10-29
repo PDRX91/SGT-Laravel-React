@@ -10,6 +10,8 @@ export default class List extends Component {
             'items' : [],
             'id': 1
         }
+
+        this.handleDelete = this.handleDelete.bind(this);
     }
 
     componentDidMount(){
@@ -24,11 +26,27 @@ export default class List extends Component {
         })
         .then((response) => {
             this.setState({'items': response.data});
-            console.log(this.state)
+            // console.log(this.state)
         })
         .catch((error)=> {
             console.log(error);
         })
+    }
+
+    handleDelete(e){
+        const studentID = e.target.id;
+        console.log(this.props.index);
+        let tableRow = document.querySelectorAll(`[key="${e.target.index}"`);
+        axios.delete('/api/students/'+ studentID)
+            .then((response)=>{
+                // console.log(response)
+                // console.log('Table Row: ', tableRow);
+
+                // tableRow.remove();
+            })
+            .then((error)=> {
+                console.log(error)
+            })
     }
 
     render() {
@@ -41,7 +59,7 @@ export default class List extends Component {
                     <td>{grade}</td>
                     <td>
                         <button className="edit-btn btn btn-info mr-2" id={id}>EDIT</button>
-                        <button className="delete-btn btn btn-danger" id={id}>DELETE</button>
+                        <button className="delete-btn btn btn-danger" id={id} onClick={this.handleDelete} index={index}>DELETE</button>
                     </td>
                 </tr>
             )
