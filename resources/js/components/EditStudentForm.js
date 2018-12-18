@@ -5,6 +5,7 @@ export default class EditStudentForm extends Component{
     constructor(props) {
         super(props);
         this.state = {
+            id: '',
             name: '',
             course: '',
             grade: ''
@@ -31,9 +32,15 @@ export default class EditStudentForm extends Component{
     }
 
     handleSave() {
-        console.log("edit form state:", this.state)
-        const item = this.state;
-        // this.props.saveedit(item)
+        this.setState({
+            id: this.props.id,
+        })
+        setTimeout(()=>{
+            console.log("edit form state:", this.state)
+            const item = this.state;
+            this.props.saveedit(item)
+        },200)
+
     }
 
     render() {

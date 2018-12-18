@@ -48,8 +48,8 @@ export default class List extends Component {
                     <td>{course}</td>
                     <td>{grade}</td>
                     <td>
-                        {/* <button className="edit-btn btn btn-info mr-2" id={id} data-toggle="modal"
-                            data-target="#editModal" onClick={()=>{this.handleEdit(item)}}>EDIT</button> */}
+                        <button className="edit-btn btn btn-info mr-2" id={id} data-toggle="modal"
+                            data-target="#editModal" onClick={()=>{this.handleEdit(item)}}>EDIT</button>
                         <button className="delete-btn btn btn-danger" id={id} onClick={this.handleDelete} index={index}>DELETE</button>
                     </td>
                 </tr>
@@ -64,7 +64,7 @@ export default class List extends Component {
         let tableRow = document.querySelectorAll(`[key="${e.target.index}"`);
         axios.delete('/api/students/'+ studentID)
             .then((response)=>{
-                this.getStudents();
+                    this.getStudents();
             })
             .then((error)=> {
                 console.log(error)
@@ -74,18 +74,41 @@ export default class List extends Component {
     handleEdit(index){
         this.setState({
             itemToEdit: index
-        })
-        console.log("edit: ", this.state.itemToEdit);
+        });
+        setTimeout(() => {
+
+            console.log("edit: ", this.state.itemToEdit);
+        }, 200)
+
+
     }
 
     saveEdit(item) {
-        const itemToEdit = this.state.itemToEdit;
-        let tempItem = this.state.items;
-        tempitem[itemToEdit] = item;
-        this.setState({
-            items: tempItem
-        })
-        this.getStudents();
+        console.log('item: ', item);
+        axios.put(
+            '/api/students/'+ item.id,
+            {
+                id: item.id,
+                name: item.name,
+                grade: item.grade,
+                course: item.course
+            }
+            )
+            .then((response)=>{
+                console.log(response)
+                    this.getStudents();
+            })
+            .then((error)=> {
+                console.log(error)
+            })
+        // const itemToEdit = this.state.itemToEdit;
+        // let tempItem = this.state.items;
+        // tempItem[itemToEdit] = item;
+        // this.setState({
+        //     items: tempItem
+        // })
+        // console.log('saving')
+        // this.getStudents();
     }
 
     renderStudent(){
@@ -95,13 +118,14 @@ export default class List extends Component {
     render() {
         const students = this.genRows();
         const itemToEdit = this.state.itemToEdit;
-        let editModal
+        let editModal;
 
         if(itemToEdit) {
-            let modalData = this.state.items[itemToEdit];
+
+            let modalData = this.state.itemToEdit;
             if(modalData){
                 console.log("modal data:", modalData)
-            editModal = <EditStudentForm name={modalData.name} course={modalData.course} grade={modaData.grade} saveedit={this.saveEdit}/>
+            editModal = <EditStudentForm id={modalData.id} name={modalData.name} course={modalData.course} grade={modalData.grade} saveedit={(item)=>{this.saveEdit(item)}}/>
             }
         } else {
             editModal = <EditStudentForm name='' course='' grade='' saveedit={this.saveEdit}/>;
