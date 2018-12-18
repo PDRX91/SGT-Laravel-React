@@ -31,12 +31,14 @@ class StudentsController extends Controller
         return response()->json(null, 204);
     }
 
-    public function update(Request $request, Student $student) {
-        $student->update([
-            'name' => $request->name,
-            'grade' => $request->grade,
-            'course' => $request->course
-        ]);
-        return response()->json($student, 200);
+    public function update($id, Request $request) {
+        // $student = Student::where('id', $id)->first();
+        Student::where('id', $id)
+            ->update([
+                'name' => $request->name,
+                'grade' => $request->grade,
+                'course' => $request->course
+            ]);
+        return response()->json('Student successfully updated', 200);
     }
 }
